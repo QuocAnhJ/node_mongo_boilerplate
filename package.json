@@ -1,0 +1,44 @@
+{
+  "name": "node-boilerplate",
+  "version": "1.0.0",
+  "description": "Nodejs development environment boilerplate",
+  "scripts": {
+    "start": "npm-run-all --parallel open:src lint",
+    "open:src": "nodemon --exec npm run babel-node -- ./app.js",
+    "babel-node": "babel-node --presets=env",
+    "security-check": "nsp check",
+    "lint": "esw server --color",
+    "localtunnel": "lt --port 3000",
+    "share": "npm-run-all --parallel open:src localtunnel"
+  },
+  "author": "Johan Tran",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^5.0.1",
+    "express-session": "^1.15.6",
+    "express-status-monitor": "^1.0.1",
+    "express-validator": "^5.0.2",
+    "jsonwebtoken": "^8.1.1",
+    "mongoose": "^5.0.7",
+    "morgan": "^1.9.0",
+    "npm-run-all": "3.1.1",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.1",
+    "babel-preset-env": "^1.6.1",
+    "chai": "^3.5.0",
+    "chalk": "1.1.3",
+    "cross-env": "3.1.3",
+    "eslint": "3.8.1",
+    "eslint-watch": "2.1.14",
+    "express": "4.16.0",
+    "localtunnel": "1.8.1",
+    "nodemon": "^1.17.1",
+    "nsp": "2.6.2"
+  }
+}
