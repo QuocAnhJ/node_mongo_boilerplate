@@ -15,24 +15,24 @@ const buildGetSuccessResponse = (res, data) => {
 };
 
 const buildPostSuccessResponse = (res, data) => {
-  return res.json({
-      status: SUCCESS,
-      data
-  });
+    return res.json({
+        status: SUCCESS,
+        data
+    });
 };
 
 const buildPutSuccessResponse = (res, data) => {
-  return res.json({
-      status: SUCCESS,
-      data
-  });
+    return res.json({
+        status: SUCCESS,
+        data
+    });
 };
 
-const buildDeleteSuccessResponse = (res, data) => {
-  return res.json({
-      status: SUCCESS,
-      data: null
-  });
+const buildDeleteSuccessResponse = (res) => {
+    return res.json({
+        status: SUCCESS,
+        data: null
+    });
 };
 
 const buildValidationErrorResponse = (res, data) => {
@@ -45,7 +45,7 @@ const buildValidationErrorResponse = (res, data) => {
 const buildDuplicationErrorResponse = (res, msg) => {
     return res.status(ENTITY_DUPLICATION_ERROR).json({
         status: FAIL,
-        data : [
+        data: [
             {
                 msg
             }
@@ -54,25 +54,25 @@ const buildDuplicationErrorResponse = (res, msg) => {
 };
 
 const buildNotFoundErrorResponse = (res, msg) => {
-  return res.status(ENTITY_NOT_FOUND_ERROR).json({
-      status: FAIL,
-      data : [
-          {
-              msg
-          }
-      ]
-  });
+    return res.status(ENTITY_NOT_FOUND_ERROR).json({
+        status: FAIL,
+        data: [
+            {
+                msg
+            }
+        ]
+    });
 };
 
 const buildInternalServerErrorResponse = (res) => {
-  return res.status(INTERNAL_SERVER_ERROR).json({
-      status: ERROR,
-      data : [
-          {
-              msg: 'Internal server error. Please contact with administrator'
-          }
-      ]
-  });
+    return res.status(INTERNAL_SERVER_ERROR).json({
+        status: ERROR,
+        data: [
+            {
+                msg: 'Internal server error. Please contact with administrator'
+            }
+        ]
+    });
 };
 
 module.exports = {

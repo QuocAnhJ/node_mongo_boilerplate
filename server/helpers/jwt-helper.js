@@ -1,7 +1,7 @@
 import JWT from 'jsonwebtoken';
-import { findUserByUsername } from '../controllers/userController';
+import { findUserByUsername } from './controller/user-controller-helper';
 
-const verifyToken = (req, res, next) => {
+exports.verifyToken = (req, res, next) => {
     try {
         if (req.path !== '/auth/signIn' && req.path !== '/auth/signUp' && req.path !== '/') {
             const token = req.headers[ 'x-access-token' ];
@@ -9,11 +9,11 @@ const verifyToken = (req, res, next) => {
             if (!token) {
                 return res.status(403).send({ auth: false, message: 'No token provided.' });
             }
-            JWT.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+            JWT.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
                 if (err) {
                     return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
                 }
-                const user = findUserByUsername(decoded.id);
+                const user = await findUserByUsername(decoded.id);
 
                 if (user) {
                     next();
@@ -30,17 +30,11 @@ const verifyToken = (req, res, next) => {
 };
 
 
-const signToken = (user) => {
-    return JWT.sign({
+exports.signToken = async (user) => {
+    return await JWT.sign({
         iss: 'ApiAuth',
         id: user.username,
         iat: new Date().getTime(),
         exp: new Date().setDate(new Date().getDate() + 1)
     }, process.env.JWT_SECRET);
-};
-
-
-module.exports = {
-    signToken,
-    verifyToken
 };

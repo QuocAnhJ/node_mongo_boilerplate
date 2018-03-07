@@ -1,13 +1,5 @@
-import Book from '../models/bookModel';
-import { RESPONSE_STATUS } from '../config';
-import {  buildGetSuccessResponse ,
-          buildInternalServerErrorResponse,
-          buildPostSuccessResponse,
-          buildValidationErrorResponse,
-          buildNotFoundErrorResponse,
-          buildPutSuccessResponse,
-          buildDeleteSuccessResponse
-        } from '../helpers/httpResponseHelper';
+import Book from '../models/book-model';
+import { buildGetSuccessResponse, buildInternalServerErrorResponse, buildPostSuccessResponse, buildValidationErrorResponse, buildNotFoundErrorResponse, buildPutSuccessResponse, buildDeleteSuccessResponse } from '../helpers/http-response-helper';
 
 const bookController = (bookService) => {
     const getIndex = async (req, res) => {
@@ -15,11 +7,11 @@ const bookController = (bookService) => {
             const query = req.query;
             const result = await Book.find(query);
 
-            buildGetSuccessResponse(res, {
+            return buildGetSuccessResponse(res, {
                 books: result
             });
         } catch (err) {
-            buildInternalServerErrorResponse(res);
+            return buildInternalServerErrorResponse(res);
         }
     };
 
@@ -44,13 +36,12 @@ const bookController = (bookService) => {
             if (newBook) {
                 return buildPostSuccessResponse(res, {
                     book: newBook
-                 });
-            } else {
-                buildInternalServerErrorResponse(res);
+                });
             }
+            return buildInternalServerErrorResponse(res);
 
         } catch (err) {
-            buildInternalServerErrorResponse(res);
+            return buildInternalServerErrorResponse(res);
         }
     };
 
@@ -60,12 +51,11 @@ const bookController = (bookService) => {
 
             if (result) {
                 req.book = result;
-                next();
-            } else {
-                return buildNotFoundErrorResponse(res, 'Book not found');
+                return next();
             }
+            return buildNotFoundErrorResponse(res, 'Book not found');
         } catch (err) {
-            buildInternalServerErrorResponse(res);
+            return buildInternalServerErrorResponse(res);
         }
     };
 
@@ -77,7 +67,7 @@ const bookController = (bookService) => {
                 book
             });
         } catch (err) {
-            buildInternalServerErrorResponse(res);
+            return buildInternalServerErrorResponse(res);
         }
     };
 
@@ -102,20 +92,16 @@ const bookController = (bookService) => {
             book.author = req.body.author;
             book.read = req.body.read;
             book.genre = req.body.genre;
-            console.log('aaa');
             const updatedBook = await book.save();
 
-            console.log('bbb');
-            console.log(updatedBook);
             if (updatedBook) {
                 return buildPutSuccessResponse(res, {
                     book: updatedBook
                 });
-            } else {
-                buildInternalServerErrorResponse(res);
             }
+            return buildInternalServerErrorResponse(res);
         } catch (err) {
-            buildInternalServerErrorResponse(res);
+            return buildInternalServerErrorResponse(res);
         }
     };
 
@@ -126,11 +112,10 @@ const bookController = (bookService) => {
 
             if (removedBook) {
                 return buildDeleteSuccessResponse(res);
-            } else {
-              buildInternalServerErrorResponse(res);
             }
+            return buildInternalServerErrorResponse(res);
         } catch (err) {
-            buildInternalServerErrorResponse(res);
+            return buildInternalServerErrorResponse(res);
         }
     };
 

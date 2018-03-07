@@ -1,8 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
-import bookRouter from './server/routes/bookRoute';
-import authRouter from './server/routes/authRoute';
 import session from 'express-session';
 import chalk from 'chalk';
 import dotenv from 'dotenv';
@@ -10,8 +8,8 @@ import logger from 'morgan';
 import expressValidator from 'express-validator';
 import expressStatusMonitor from 'express-status-monitor';
 import passport from 'passport';
-import { RESPONSE_STATUS } from './server/config';
-import { verifyToken } from './server/helpers/jwtHelper';
+import { verifyToken } from './server/helpers/jwt-helper';
+import router from './server/routes'
 
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
@@ -27,7 +25,7 @@ const app = express();
 /**
  * Connect to MongoDB.
  */
-mongoose.connect(process.env.MONGODB_URI).then(
+mongoose.connect(process.env.MONGOLAB_URI).then(
   () => {
       console.log(chalk.green('MongoDB connection is established'));
   },
@@ -61,11 +59,7 @@ app.use(verifyToken);
 /**
  * Primary app routes.
  */
-app.use('/books', bookRouter());
-app.use('/auth', authRouter());
-app.get('/', function (req, res) {
-    res.send('Login page');
-});
+app.use(router);
 
 
 /**

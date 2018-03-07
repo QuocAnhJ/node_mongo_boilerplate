@@ -1,5 +1,5 @@
 import express from 'express';
-import bookController from '../controllers/bookController';
+import bookController from '../controllers/book-controller';
 import bookService from '../services/goodreadsService';
 
 const bookRouter = express.Router();

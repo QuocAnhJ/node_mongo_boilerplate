@@ -1,18 +1,14 @@
-import User from '../models/userModel';
+import User from '../models/user-model';
 import passport from 'passport';
-import { RESPONSE_STATUS } from '../config';
-import { signToken } from '../helpers/jwtHelper';
+import { signToken } from '../helpers/jwt-helper';
+import { findUserByUsername } from '../helpers/controller/user-controller-helper';
 import {
     buildValidationErrorResponse,
     buildDuplicationErrorResponse,
     buildPostSuccessResponse,
     buildInternalServerErrorResponse,
     buildNotFoundErrorResponse
-    } from '../helpers/httpResponseHelper';
-
-export const findUserByUsername = async (username) => {
-    return await User.findOne({ username: username });
-};
+    } from '../helpers/http-response-helper';
 
 const userController = () => {
     const signUp = async (req, res) => {
@@ -35,12 +31,11 @@ const userController = () => {
             const newUser = await user.save();
 
             if (newUser) {
-                const token = signToken(newUser);
+                const token = await signToken(newUser);
 
                 return buildPostSuccessResponse(res, { token });
-            } else {
-                return buildInternalServerErrorResponse(res);
             }
+            return buildInternalServerErrorResponse(res);
         } catch (err) {
             return buildInternalServerErrorResponse(res);
         }
@@ -57,7 +52,7 @@ const userController = () => {
             return buildValidationErrorResponse(res, errors);
         }
          /* End of field Validation */
-        passport.authenticate('local', { session: false }, (authErr, user) => {
+        passport.authenticate('local', { session: false }, async (authErr, user) => {
             try {
                 if (authErr) {
                     return next(authErr);
@@ -65,7 +60,7 @@ const userController = () => {
                 if (!user) {
                     return buildNotFoundErrorResponse(res, 'User not found');
                 }
-                const token = signToken(user);
+                const token = await signToken(user);
 
                 return buildPostSuccessResponse(res, { token });
             } catch (err) {
