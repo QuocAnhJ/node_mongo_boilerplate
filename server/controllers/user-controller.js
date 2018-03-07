@@ -3,7 +3,6 @@ import passport from 'passport';
 import { signToken } from '../helpers/jwt-helper';
 import { findUserByUsername } from '../helpers/controller/user-controller-helper';
 import {
-    buildValidationErrorResponse,
     buildDuplicationErrorResponse,
     buildPostSuccessResponse,
     buildInternalServerErrorResponse,
@@ -13,15 +12,6 @@ import {
 const userController = () => {
     const signUp = async (req, res) => {
         try {
-            /* Field validation */
-            req.checkBody('username', 'Username is not valid').isEmail().trim();
-            req.checkBody('password', 'Password cannot be blank').notEmpty().trim();
-            const errors = req.validationErrors();
-
-            if (errors) {
-                return buildValidationErrorResponse(res, errors);
-            }
-            /* End of field Validation */
             const existingUser = await findUserByUsername(req.body.username);
 
             if (existingUser) {
@@ -42,16 +32,6 @@ const userController = () => {
     };
 
     const authenticate = (req, res, next) => {
-         /* Field validation */
-        req.checkBody('username', 'Username is not valid').isEmail().trim();
-        req.checkBody('password', 'Password cannot be blank').notEmpty().trim();
-
-        const errors = req.validationErrors();
-
-        if (errors) {
-            return buildValidationErrorResponse(res, errors);
-        }
-         /* End of field Validation */
         passport.authenticate('local', { session: false }, async (authErr, user) => {
             try {
                 if (authErr) {

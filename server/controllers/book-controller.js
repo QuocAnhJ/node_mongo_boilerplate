@@ -1,5 +1,5 @@
 import Book from '../models/book-model';
-import { buildGetSuccessResponse, buildInternalServerErrorResponse, buildPostSuccessResponse, buildValidationErrorResponse, buildNotFoundErrorResponse, buildPutSuccessResponse, buildDeleteSuccessResponse } from '../helpers/http-response-helper';
+import { buildGetSuccessResponse, buildInternalServerErrorResponse, buildPostSuccessResponse, buildNotFoundErrorResponse, buildPutSuccessResponse, buildDeleteSuccessResponse } from '../helpers/http-response-helper';
 
 const bookController = (bookService) => {
     const getIndex = async (req, res) => {
@@ -17,19 +17,6 @@ const bookController = (bookService) => {
 
     const addBooks = async (req, res) => {
         try {
-            /* Field validation */
-            req.checkBody('title', 'Title cannot be blank').notEmpty().trim();
-            req.checkBody('author', 'Author cannot be blank').notEmpty().trim();
-            req.checkBody('genre').trim();
-            req.checkBody('read', 'Read is must boolean type').isBoolean().trim();
-
-            const errors = req.validationErrors();
-
-            if (errors) {
-                return buildValidationErrorResponse(res, errors);
-            }
-            /* End of field Validation */
-
             const book = new Book(req.body);
             const newBook = await book.save();
 
@@ -73,19 +60,6 @@ const bookController = (bookService) => {
 
     const updateBook = async (req, res) => {
         try {
-            /* Field validation */
-            req.checkBody('title', 'Title cannot be blank').notEmpty().trim();
-            req.checkBody('author', 'Author cannot be blank').notEmpty().trim();
-            req.checkBody('genre').trim();
-            req.checkBody('read', 'Read is must boolean type').isBoolean().trim();
-
-            const errors = req.validationErrors();
-
-            if (errors) {
-                return buildValidationErrorResponse(res, errors);
-            }
-            /* End of field Validation */
-
             let book = new Book(req.book);
 
             book.title = req.body.title;
