@@ -1,6 +1,6 @@
 import {
-    buildValidationErrorResponse
-  } from '../helpers/http-response-helper';
+  VALIDATION_ERROR
+} from '../config/constants';
 
 module.exports = {
     validateRequestBody: async (req, res, next) => {
@@ -9,7 +9,7 @@ module.exports = {
         const errors = await req.validationErrors();
 
         if (errors) {
-            return buildValidationErrorResponse(res, errors);
+            return next( { status: VALIDATION_ERROR, errors });
         }
         next();
     }

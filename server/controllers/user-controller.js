@@ -3,19 +3,19 @@ import passport from 'passport';
 import { signToken } from '../helpers/jwt-helper';
 import { findUserByUsername } from '../helpers/controller/user-controller-helper';
 import {
-    buildDuplicationErrorResponse,
-    buildPostSuccessResponse,
-    buildInternalServerErrorResponse,
-    buildNotFoundErrorResponse
-    } from '../helpers/http-response-helper';
+  ENTITY_DUPLICATION_ERROR,
+  ENTITY_NOT_FOUND_ERROR,
+  OK
+} from '../config/constants';
 
 const userController = () => {
-    const signUp = async (req, res) => {
+    const signUp = async (req, res, next) => {
         try {
             const existingUser = await findUserByUsername(req.body.username);
 
             if (existingUser) {
-                return buildDuplicationErrorResponse(res, 'The user exists in system');
+                /** Pass error to errorHandler */
+                return next( { status: ENTITY_DUPLICATION_ERROR });
             }
             const user = new User(req.body);
             const newUser = await user.save();
@@ -23,11 +23,11 @@ const userController = () => {
             if (newUser) {
                 const token = await signToken(newUser);
 
-                return buildPostSuccessResponse(res, { token });
+                return next({ status: OK, data: { token } });
             }
-            return buildInternalServerErrorResponse(res);
+            return next( { status: INTERNAL_SERVER_ERROR });
         } catch (err) {
-            return buildInternalServerErrorResponse(res);
+            return next( { status: INTERNAL_SERVER_ERROR });
         }
     };
 
@@ -35,16 +35,16 @@ const userController = () => {
         passport.authenticate('local', { session: false }, async (authErr, user) => {
             try {
                 if (authErr) {
-                    return next(authErr);
+                    return next( { status: INTERNAL_SERVER_ERROR });
                 }
                 if (!user) {
-                    return buildNotFoundErrorResponse(res, 'User not found');
+                    return next({ status: ENTITY_NOT_FOUND_ERROR, msg: 'Username/password is not correct' });
                 }
                 const token = await signToken(user);
 
-                return buildPostSuccessResponse(res, { token });
+                return next({ status: OK, data: { token } });
             } catch (err) {
-                return buildInternalServerErrorResponse(res);
+                return next( { status: INTERNAL_SERVER_ERROR });
             }
         })(req, res, next);
     };

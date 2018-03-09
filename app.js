@@ -9,7 +9,8 @@ import expressValidator from 'express-validator';
 import expressStatusMonitor from 'express-status-monitor';
 import passport from 'passport';
 import { verifyToken } from './server/helpers/jwt-helper';
-import router from './server/routes'
+import router from './server/routes';
+import { responseHandler } from './server/helpers/http-response-handler';
 
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
@@ -61,7 +62,7 @@ app.use(verifyToken);
  */
 app.use(router);
 
-
+app.use(responseHandler);
 /**
  * Start Express server.
  */

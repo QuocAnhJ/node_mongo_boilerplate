@@ -1,34 +1,33 @@
 import Book from '../models/book-model';
-import { buildGetSuccessResponse, buildInternalServerErrorResponse, buildPostSuccessResponse, buildNotFoundErrorResponse, buildPutSuccessResponse, buildDeleteSuccessResponse } from '../helpers/http-response-helper';
+import {
+  OK,
+  INTERNAL_SERVER_ERROR,
+  ENTITY_NOT_FOUND_ERROR
+} from '../config/constants';
 
 const bookController = (bookService) => {
-    const getIndex = async (req, res) => {
+    const getIndex = async (req, res, next) => {
         try {
             const query = req.query;
             const result = await Book.find(query);
 
-            return buildGetSuccessResponse(res, {
-                books: result
-            });
+            return next({ status: OK, data: { books: result } });
         } catch (err) {
-            return buildInternalServerErrorResponse(res);
+            return next( { status: INTERNAL_SERVER_ERROR });
         }
     };
 
-    const addBooks = async (req, res) => {
+    const addBooks = async (req, res, next) => {
         try {
             const book = new Book(req.body);
             const newBook = await book.save();
 
             if (newBook) {
-                return buildPostSuccessResponse(res, {
-                    book: newBook
-                });
+                return next({ status: OK, data: { book: newBook } });
             }
-            return buildInternalServerErrorResponse(res);
-
+            return next( { status: INTERNAL_SERVER_ERROR });
         } catch (err) {
-            return buildInternalServerErrorResponse(res);
+            return next( { status: INTERNAL_SERVER_ERROR });
         }
     };
 
@@ -40,25 +39,23 @@ const bookController = (bookService) => {
                 req.book = result;
                 return next();
             }
-            return buildNotFoundErrorResponse(res, 'Book not found');
+            return next({ status: ENTITY_NOT_FOUND_ERROR });
         } catch (err) {
-            return buildInternalServerErrorResponse(res);
+            return next( { status: INTERNAL_SERVER_ERROR });
         }
     };
 
-    const getBookDetail = async (req, res) => {
+    const getBookDetail = async (req, res, next) => {
         try {
             const book = await bookService.getBookById(req.book._id);
 
-            return buildGetSuccessResponse(res, {
-                book
-            });
+            return next({ status: OK, data: { book } });
         } catch (err) {
-            return buildInternalServerErrorResponse(res);
+            return next( { status: INTERNAL_SERVER_ERROR });
         }
     };
 
-    const updateBook = async (req, res) => {
+    const updateBook = async (req, res, next) => {
         try {
             let book = new Book(req.book);
 
@@ -69,27 +66,25 @@ const bookController = (bookService) => {
             const updatedBook = await book.save();
 
             if (updatedBook) {
-                return buildPutSuccessResponse(res, {
-                    book: updatedBook
-                });
+                return next({ status: OK, data: { book: updatedBook } });
             }
-            return buildInternalServerErrorResponse(res);
+            return next( { status: INTERNAL_SERVER_ERROR });
         } catch (err) {
-            return buildInternalServerErrorResponse(res);
+            return next( { status: INTERNAL_SERVER_ERROR });
         }
     };
 
-    const removeBook = async (req, res) => {
+    const removeBook = async (req, res, next) => {
         try {
             let book = req.book;
             const removedBook = await book.remove();
 
             if (removedBook) {
-                return buildDeleteSuccessResponse(res);
+                return next({ status: OK, data: null });
             }
-            return buildInternalServerErrorResponse(res);
+            return next( { status: INTERNAL_SERVER_ERROR });
         } catch (err) {
-            return buildInternalServerErrorResponse(res);
+            return next( { status: INTERNAL_SERVER_ERROR });
         }
     };
 
