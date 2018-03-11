@@ -60,7 +60,7 @@ app.use(verifyToken);
 /**
  * Primary app routes.
  */
-app.use(router);
+app.use('/api', router);
 
 app.use(responseHandler);
 /**

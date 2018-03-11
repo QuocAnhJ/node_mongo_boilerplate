@@ -16,6 +16,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "dotenv": "^5.0.1",
+    "express-acl": "^1.0.4",
     "express-session": "^1.15.6",
     "express-status-monitor": "^1.0.1",
     "express-validator": "^5.0.2",

@@ -3,6 +3,7 @@ import {
   ENTITY_NOT_FOUND_ERROR,
   INTERNAL_SERVER_ERROR,
   VALIDATION_ERROR,
+  UNAUTHORIZED_RESOURCE_ERROR,
   OK
 } from '../config/constants';
 
@@ -43,6 +44,16 @@ module.exports = {
                 res.status(VALIDATION_ERROR).json({
                     status: FAIL,
                     data: result.errors
+                });
+                break;
+            case UNAUTHORIZED_RESOURCE_ERROR:
+                res.status(UNAUTHORIZED_RESOURCE_ERROR).json({
+                    status: FAIL,
+                    data: [
+                        {
+                            msg: result.msg || 'You are not authorized to access this resource'
+                        }
+                    ]
                 });
                 break;
             default:
