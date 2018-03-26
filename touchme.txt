@@ -1,0 +1,5 @@
+#vimtutor
+roses are red,
+violets are blue,
+intelligence is learned,
+can you learn too?
